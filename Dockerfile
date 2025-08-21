@@ -1,10 +1,11 @@
 FROM python:3.10-slim
 
-WORKDIR D:\new\django-todo-cicd\Jenkinsfile
-
+# Linux path inside container
+WORKDIR /app
 
 COPY . .
 
 EXPOSE 8000
 
-CMD ["HTML", "todo.html"]
+# CMD to run Django app or HTML server
+CMD ["python", "-m", "http.server", "8000"]
