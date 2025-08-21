@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        IMAGE_NAME = "manan3699/django-todo"
+        IMAGE_TAG = "latest"
+    }
     stages {
         stage('Checkout Code') {
             steps {
@@ -10,9 +14,16 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t manan3699/jenkins/jenkins:latest .'
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                    sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+                }
             }
         }
     }
 }
- 
