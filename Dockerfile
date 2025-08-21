@@ -1,6 +1,7 @@
 FROM python:3.10-slim
 
-WORKDIR D:\new\django-todo-cicd
+WORKDIR D:\new\django-todo-cicd\jenkinsfile
+
 
 COPY . .
 
