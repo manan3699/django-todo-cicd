@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-WORKDIR D:\new\dockerfile
+WORKDIR D:\new\django-todo-cicd
 
 COPY . .
 
