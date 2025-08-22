@@ -5,6 +5,10 @@ pipeline {
         DOCKER_IMAGE = "manan3699/django-todo"
     }
 
+    triggers {
+        githubPush()   // 🔥 Trigger build automatically on git push
+    }
+
     stages {
         stage('Clone Repository') {
             steps {
