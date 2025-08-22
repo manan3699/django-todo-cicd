@@ -21,8 +21,10 @@
     text-decoration: none;
     transition: color 0.3s;
   }
-  a:hover {
+  a:hover,
+  a:focus {
     color: #ffb300;
+    outline: none;
   }
   
   /* Container */
@@ -46,6 +48,7 @@
     justify-content: space-between;
     align-items: center;
     height: 70px;
+    padding: 0 10px;
   }
   nav .logo {
     font-weight: 900;
@@ -53,11 +56,13 @@
     letter-spacing: 2px;
     color: #f9a825;
     user-select: none;
+    cursor: default;
   }
   nav ul {
     list-style: none;
     display: flex;
     gap: 30px;
+    margin: 0;
   }
   nav ul li {
     line-height: 1;
@@ -65,6 +70,29 @@
   nav ul li a {
     font-weight: 600;
     font-size: 1.05rem;
+    position: relative;
+    padding-bottom: 4px;
+  }
+  nav ul li a::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: #f9a825;
+    left: 0;
+    bottom: 0;
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+  nav ul li a:hover::after,
+  nav ul li a:focus::after,
+  nav ul li a.active::after {
+    width: 100%;
+  }
+
+  nav ul li a:focus {
+    outline: 2px solid #f9a825;
+    outline-offset: 2px;
   }
 
   /* Hero section */
@@ -76,6 +104,13 @@
     border-radius: 0 0 40px 40px;
     color: #fff;
     text-shadow: 0 2px 15px rgba(0,0,0,0.7);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.9s ease-out;
+  }
+  .hero.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
   .hero-text {
     flex: 1 1 350px;
@@ -101,12 +136,16 @@
     font-size: 1.1rem;
     color: #222;
     box-shadow: 0 6px 10px rgba(249,168,37,.5);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
     display: inline-block;
   }
   .hero-text a.btn-primary:hover {
     background: #ffb300;
     box-shadow: 0 8px 15px rgba(255,179,0,.7);
+    transform: scale(1.05);
+  }
+  .hero-text a.btn-primary:active {
+    transform: scale(0.95);
   }
   .hero-image {
     flex: 1 1 400px;
@@ -128,6 +167,13 @@
   section.featured-cars {
     margin: 60px 0 80px;
     color: #eee;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.9s ease-out 0.2s;
+  }
+  section.featured-cars.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
   section.featured-cars h2 {
     text-align: center;
@@ -154,7 +200,8 @@
     position: relative;
     cursor: pointer;
   }
-  .car-card:hover {
+  .car-card:hover,
+  .car-card:focus-within {
     transform: translateY(-10px);
     box-shadow: 0 14px 30px rgba(249,168,37, 0.9);
   }
@@ -190,11 +237,15 @@
     padding: 10px 30px;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease;
   }
   .car-card button:hover {
     background-color: #f9a825;
     color: #222;
+    transform: scale(1.05);
+  }
+  .car-card button:active {
+    transform: scale(0.95);
   }
 
   /* Photo Gallery Section */
@@ -202,6 +253,13 @@
     max-width: 1180px;
     margin: 70px auto 90px;
     padding: 0 20px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.9s ease-out 0.4s;
+  }
+  section.gallery.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
   section.gallery h2 {
     font-size: 2.8rem;
@@ -222,12 +280,17 @@
     overflow: hidden;
     box-shadow: 0 10px 25px rgba(0,0,0,0.6);
     transition: transform 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
   }
   .gallery-item:hover {
     transform: scale(1.07);
     box-shadow: 0 14px 40px rgba(249,168,37,0.85);
     z-index: 10;
     position: relative;
+  }
+  .gallery-item:focus {
+    outline: 3px solid #f9a825;
+    outline-offset: 3px;
   }
   .gallery-item img {
     width: 100%;
@@ -247,6 +310,13 @@
     text-align: center;
     max-width: 900px;
     margin: 0 auto 80px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.9s ease-out 0.6s;
+  }
+  section.about.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
   section.about h2 {
     font-size: 2.6rem;
@@ -264,6 +334,13 @@
   /* Contact Section */
   section.contact {
     margin-bottom: 80px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.9s ease-out 0.8s;
+  }
+  section.contact.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
   section.contact h2 {
     text-align: center;
@@ -315,6 +392,9 @@
   .contact-form button:hover {
     background-color: #ffb300;
   }
+  .contact-form button:active {
+    transform: scale(0.98);
+  }
 
   /* Footer */
   footer {
@@ -347,10 +427,10 @@
     <nav>
       <div class="logo" aria-label="ProCar brand name">ProCar</div>
       <ul>
-        <li><a href="#featured">Cars</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a class="nav-link active" href="#featured">Cars</a></li>
+        <li><a class="nav-link" href="#gallery">Gallery</a></li>
+        <li><a class="nav-link" href="#about">About</a></li>
+        <li><a class="nav-link" href="#contact">Contact</a></li>
       </ul>
     </nav>
   </div>
@@ -368,9 +448,131 @@
     </div>
   </section>
 
-  <section id="featured" class="featured-cars" aria-labelledby="cars-heading">
+  <section id="featured" class="featured-cars">
     <h2 id="cars-heading">Featured Cars</h2>
     <div class="car-cards">
 
       <article class="car-card" tabindex="0" aria-label="Tesla Model S">
-        <img alt="Tesla Model S red" src="https://tesla-cdn.thron.com/delivery/public/image
+        <img alt="Tesla Model S red" src="https://tesla-cdn.thron.com/delivery/public/image/tesla/5b7d5177-ad58-4333-9e4c-5f5eae802f7b/bvlatuR/std/1920x1080/_25-Hero-D" />
+        <div class="car-card-content">
+          <h3>Tesla Model S</h3>
+          <p class="car-specs">Electric - 396 mi Range - 0-60 mph in 1.99s</p>
+          <button aria-label="View Tesla Model S details">View Details</button>
+        </div>
+      </article>
+
+      <article class="car-card" tabindex="0" aria-label="BMW i8 Roadster">
+        <img alt="BMW i8 Roadster blue" src="https://cdn.bmwblog.com/wp-content/uploads/2015/05/BMW-i8-Roadster-41.jpg" />
+        <div class="car-card-content">
+          <h3>BMW i8 Roadster</h3>
+          <p class="car-specs">Hybrid - 330 hp - 0-60 mph in 4.2s</p>
+          <button aria-label="View BMW i8 Roadster details">View Details</button>
+        </div>
+      </article>
+
+      <article class="car-card" tabindex="0" aria-label="Audi RS7">
+        <img alt="Audi RS7 black" src="https://cdn.motor1.com/images/mgl/0ANrG/s1/2022-audi-rs7.jpg" />
+        <div class="car-card-content">
+          <h3>Audi RS7</h3>
+          <p class="car-specs">5.0L V8 Turbo - 591 hp - 0-60 mph in 3.5s</p>
+          <button aria-label="View Audi RS7 details">View Details</button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="gallery" class="gallery">
+    <h2 id="gallery-heading">Car Gallery</h2>
+    <div class="gallery-grid">
+      <div class="gallery-item" tabindex="0" aria-label="Silver sports car">
+        <img src="https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?auto=format&fit=crop&w=800&q=80" alt="Silver sports car on road" />
+      </div>
+      <div class="gallery-item" tabindex="0" aria-label="Black luxury sedan">
+        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80" alt="Black luxury sedan with sunset" />
+      </div>
+      <div class="gallery-item" tabindex="0" aria-label="Blue muscle car">
+        <img src="https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?auto=format&fit=crop&w=800&q=80" alt="Blue vintage muscle car" />
+      </div>
+      <div class="gallery-item" tabindex="0" aria-label="White coupe car">
+        <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80" alt="White coupe parked outdoors" />
+      </div>
+      <div class="gallery-item" tabindex="0" aria-label="Red vintage car">
+        <img src="https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=800&q=80" alt="Red vintage car with green trees" />
+      </div>
+      <div class="gallery-item" tabindex="0" aria-label="Blue luxury car night">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Blue luxury car at night" />
+      </div>
+    </div>
+  </section>
+  
+  <section id="about" class="about">
+    <h2 id="about-heading">About ProCar</h2>
+    <p>At ProCar, we curate the finest collection of high-performance and electric vehicles combined with style, technology, and precision engineering. Whether you're a thrill-seeker or a tech enthusiast, our showroom offers the car of your dreams. Experience automotive excellence with us.</p>
+  </section>
+
+  <section id="contact" class="contact">
+    <h2 id="contact-heading">Contact Us</h2>
+    <form class="contact-form" aria-label="Contact form">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" placeholder="Your full name" required autocomplete="name" />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="Your email address" required autocomplete="email" />
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" placeholder="Write your message here" required></textarea>
+
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
+</main>
+
+<footer>
+  &copy; 2025 ProCar. All rights reserved.
+</footer>
+
+<script>
+  // Scroll spy for nav highlighting
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav ul li a');
+
+  function onScroll() {
+    const scrollPos = window.scrollY || window.pageYOffset;
+
+    sections.forEach(section => {
+      const offsetTop = section.offsetTop - 90;
+      const offsetBottom = offsetTop + section.offsetHeight;
+
+      const id = section.getAttribute('id');
+      const link = document.querySelector(`nav ul li a[href="#${id}"]`);
+
+      if (scrollPos >= offsetTop && scrollPos < offsetBottom) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        if (link) link.classList.add('active');
+      }
+    });
+
+    // Show sections animation on scroll
+    document.querySelectorAll('section, .hero').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if(rect.top < window.innerHeight * 0.85){
+        el.classList.add('visible');
+      }
+    });
+  }
+
+  document.addEventListener('scroll', onScroll);
+  window.addEventListener('load', onScroll);
+
+  // Smooth form submission demo
+  const form = document.querySelector('.contact-form');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    alert('Thank you for your message! We will get back to you soon.');
+    form.reset();
+  });
+</script>
+
+</body>
+</html>
