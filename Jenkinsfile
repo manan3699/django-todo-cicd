@@ -17,32 +17,19 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE}:${BUILD_NUMBER}")
+                    docker.build("${DOCKER_IMAGE}:latest")
                 }
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage('Run Container') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-                        docker.image("${DOCKER_IMAGE}:${BUILD_NUMBER}").push()
-                        docker.image("${DOCKER_IMAGE}:${BUILD_NUMBER}").push("latest")
-                    }
-                }
-            }
-        }
+                    // Stop old container if running
+                    sh 'docker stop myapp || true && docker rm myapp || true'
 
-        stage('Deploy Container') {
-            steps {
-                script {
-                    sh """
-                        docker pull ${DOCKER_IMAGE}:latest
-                        docker stop myapp || true
-                        docker rm myapp || true
-                        docker run -d -p 8000:8080 --name myapp ${DOCKER_IMAGE}:latest
-                        docker ps -a
-                    """
+                    // Run with correct port mapping
+                    sh 'docker run -d -p 8000:8000 --name myapp ${DOCKER_IMAGE}:latest'
                 }
             }
         }
