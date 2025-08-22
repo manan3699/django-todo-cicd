@@ -41,9 +41,10 @@ pipeline {
                         docker stop myapp || true
                         docker rm myapp || true
                         docker run -d -p 8000:8080 --name myapp ${DOCKER_IMAGE}:latest
+                        docker ps -a
                     """
                 }
             }
-        }
-    }
+        }
+    }
 }
