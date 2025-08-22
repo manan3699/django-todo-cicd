@@ -1,27 +1,34 @@
 pipeline {
     agent any
+
     environment {
-        IMAGE_NAME = "manan3699/django-todo"
-        IMAGE_TAG = "latest"
+        DOCKER_IMAGE = "manan3699/django-todo"
     }
+
     stages {
-        stage('Checkout Code') {
+        stage('Clone Repository') {
             steps {
-                git branch: 'main', 
+                git branch: 'main',
                     url: 'https://github.com/manan3699/django-todo-cicd.git',
-                    credentialsId: 'dockerhub-creds'
+                    credentialsId: 'github-credentials'
             }
         }
+
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                script {
+                    docker.build("${DOCKER_IMAGE}:${BUILD_NUMBER}")
+                }
             }
         }
-        stage('Push Docker Image') {
+
+        stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
-                    sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
+                        docker.image("${DOCKER_IMAGE}:${BUILD_NUMBER}").push()
+                        docker.image("${DOCKER_IMAGE}:${BUILD_NUMBER}").push("latest")
+                    }
                 }
             }
         }
