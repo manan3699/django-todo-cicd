@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple To-Do List by manan </title>
+  <style>
+    body {
+      background: #f0f4f8;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .todo-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      width: 350px;
+    }
+    .todo-box h2 {
+      text-align: center;
+      color: #333;
+    }
+    input {
+      width: 80%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-right: 5px;
+    }
+    button {
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+    li {
+      background: #f8f9fa;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    li.completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+    .delete {
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="todo-box">
+  <h2>📝 My To-Do List</h2>
+  <input id="taskInput" type="text" placeholder="Enter a task...">
+  <button onclick="addTask()">Add</button>
+  <ul id="taskList"></ul>
+</div>
+
+<script>
+  function addTask() {
+    let taskInput = document.getElementById("taskInput");
+    let task = taskInput.value.trim();
+    if (task === "") return;
+
+    let li = document.createElement("li");
+    li.textContent = task;
+    li.onclick = () => li.classList.toggle("completed");
+
+    let delBtn = document.createElement("button");
+    delBtn.textContent = "X";
+    delBtn.className = "delete";
+    delBtn.onclick = (e) => {
+      e.stopPropagation();
+      li.remove();
+    };
+
+    li.appendChild(delBtn);
+    document.getElementById("taskList").appendChild(li);
+    taskInput.value = "";
+  }
+</script>
+
+</body>
+</html>
+
