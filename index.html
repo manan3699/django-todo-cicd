@@ -1,104 +1,376 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Simple To-Do List by manan </title>
-  <style>
-    body {
-      background: #f0f4f8;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ProCar - The Ultimate Car Showcase</title>
+<style>
+  /* Reset & baseline */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #eee;
+    scroll-behavior: smooth;
+  }
+  a {
+    color: #f9a825;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  a:hover {
+    color: #ffb300;
+  }
+  
+  /* Container */
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Header and nav */
+  header {
+    background-color: rgba(20, 30, 40, 0.85);
+    position: fixed;
+    width: 100%;
+    top: 0; left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+  }
+  nav .logo {
+    font-weight: 900;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    color: #f9a825;
+    user-select: none;
+  }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+  }
+  nav ul li {
+    line-height: 1;
+  }
+  nav ul li a {
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+
+  /* Hero section */
+  .hero {
+    padding: 140px 20px 80px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    background: url('https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    border-radius: 0 0 40px 40px;
+    color: #fff;
+    text-shadow: 0 2px 15px rgba(0,0,0,0.7);
+  }
+  .hero-text {
+    flex: 1 1 350px;
+    max-width: 600px;
+    margin-bottom: 20px;
+    align-self: center;
+  }
+  .hero-text h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+  }
+  .hero-text p {
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+    line-height: 1.5;
+    letter-spacing: 1px;
+  }
+  .hero-text a.btn-primary {
+    background: #f9a825;
+    padding: 15px 40px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #222;
+    box-shadow: 0 6px 10px rgba(249,168,37,.5);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+  }
+  .hero-text a.btn-primary:hover {
+    background: #ffb300;
+    box-shadow: 0 8px 15px rgba(255,179,0,.7);
+  }
+  .hero-image {
+    flex: 1 1 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .hero-image img {
+    max-width: 100%;
+    border-radius: 30px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+    transition: transform 0.4s ease;
+  }
+  .hero-image img:hover {
+    transform: scale(1.05) rotate(1.2deg);
+  }
+
+  /* Featured Cars Section */
+  section.featured-cars {
+    margin: 60px 0 80px;
+    color: #eee;
+  }
+  section.featured-cars h2 {
+    text-align: center;
+    font-size: 2.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    margin-bottom: 50px;
+    color: #f9a825;
+    text-shadow: 0 2px 8px rgba(249,168,37,0.7);
+  }
+  .car-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+  }
+  .car-card {
+    background-color: rgba(32, 42, 56, 0.85);
+    border-radius: 25px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.7);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+  .car-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 14px 30px rgba(249,168,37, 0.9);
+  }
+  .car-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 2px solid #f9a825;
+  }
+  .car-card-content {
+    padding: 20px 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .car-card h3 {
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+    color: #f9a825;
+    letter-spacing: 1.3px;
+  }
+  .car-specs {
+    font-size: 0.9rem;
+    color: #ddd;
+    margin-bottom: 15px;
+  }
+  .car-card button {
+    background: transparent;
+    border: 2px solid #f9a825;
+    color: #f9a825;
+    border-radius: 40px;
+    padding: 10px 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .car-card button:hover {
+    background-color: #f9a825;
+    color: #222;
+  }
+
+  /* Photo Gallery Section */
+  section.gallery {
+    max-width: 1180px;
+    margin: 70px auto 90px;
+    padding: 0 20px;
+  }
+  section.gallery h2 {
+    font-size: 2.8rem;
+    color: #f9a825;
+    text-align: center;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    text-shadow: 0 2px 6px rgba(249,168,37,0.7);
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+    grid-gap: 25px;
+  }
+  .gallery-item {
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .gallery-item:hover {
+    transform: scale(1.07);
+    box-shadow: 0 14px 40px rgba(249,168,37,0.85);
+    z-index: 10;
+    position: relative;
+  }
+  .gallery-item img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 25px;
+    display: block;
+  }
+
+
+  /* About section */
+  section.about {
+    background-color: rgba(249,168,37,0.1);
+    padding: 60px 20px;
+    border-radius: 25px;
+    color: #443e20;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto 80px;
+  }
+  section.about h2 {
+    font-size: 2.6rem;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    color: #f9a825;
+  }
+  section.about p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* Contact Section */
+  section.contact {
+    margin-bottom: 80px;
+  }
+  section.contact h2 {
+    text-align: center;
+    font-size: 2.6rem;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+    color: #f9a825;
+  }
+  .contact-form {
+    max-width: 500px;
+    background-color: rgba(20, 30, 40, 0.9);
+    padding: 30px;
+    border-radius: 25px;
+    margin: 0 auto;
+  }
+  .contact-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 15px;
+    font-size: 1rem;
+    background-color: #222c3b;
+    color: #eee;
+  }
+  .contact-form textarea {
+    height: 110px;
+    resize: none;
+  }
+  .contact-form button {
+    background: #f9a825;
+    color: #222;
+    border: none;
+    padding: 15px 40px;
+    font-weight: 700;
+    border-radius: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+  .contact-form button:hover {
+    background-color: #ffb300;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 30px 10px;
+    color: #999;
+    font-size: 0.9rem;
+    user-select: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    .hero {
+      flex-direction: column;
+      padding: 120px 20px 60px 20px;
     }
-    .todo-box {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      width: 350px;
+    .hero-text h1 {
+      font-size: 2.8rem;
     }
-    .todo-box h2 {
-      text-align: center;
-      color: #333;
+    nav ul {
+      gap: 18px;
     }
-    input {
-      width: 80%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      margin-right: 5px;
-    }
-    button {
-      padding: 10px;
-      background: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 20px;
-    }
-    li {
-      background: #f8f9fa;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    li.completed {
-      text-decoration: line-through;
-      color: gray;
-    }
-    .delete {
-      background: red;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      padding: 5px;
-      cursor: pointer;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
-<div class="todo-box">
-  <h2>📝 My To-Do List</h2>
-  <input id="taskInput" type="text" placeholder="Enter a task...">
-  <button onclick="addTask()">Add</button>
-  <ul id="taskList"></ul>
-</div>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo" aria-label="ProCar brand name">ProCar</div>
+      <ul>
+        <li><a href="#featured">Cars</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
-<script>
-  function addTask() {
-    let taskInput = document.getElementById("taskInput");
-    let task = taskInput.value.trim();
-    if (task === "") return;
+<main>
+  <section class="hero">
+    <div class="hero-text" role="banner" aria-label="Hero banner with tagline">
+      <h1>The Future of Driving, Today</h1>
+      <p>Discover cutting-edge cars, blending performance with innovative technology. Experience the drive like never before.</p>
+      <a href="#featured" class="btn-primary">Explore Cars</a>
+    </div>
+    <div class="hero-image" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80" alt="Luxury red sports car on a highway" />
+    </div>
+  </section>
 
-    let li = document.createElement("li");
-    li.textContent = task;
-    li.onclick = () => li.classList.toggle("completed");
+  <section id="featured" class="featured-cars" aria-labelledby="cars-heading">
+    <h2 id="cars-heading">Featured Cars</h2>
+    <div class="car-cards">
 
-    let delBtn = document.createElement("button");
-    delBtn.textContent = "X";
-    delBtn.className = "delete";
-    delBtn.onclick = (e) => {
-      e.stopPropagation();
-      li.remove();
-    };
-
-    li.appendChild(delBtn);
-    document.getElementById("taskList").appendChild(li);
-    taskInput.value = "";
-  }
-</script>
-
-</body>
-</html>
-
+      <article class="car-card" tabindex="0" aria-label="Tesla Model S">
+        <img alt="Tesla Model S red" src="https://tesla-cdn.thron.com/delivery/public/image
