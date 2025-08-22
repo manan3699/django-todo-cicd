@@ -32,5 +32,18 @@ pipeline {
                 }
             }
         }
-    }
+
+        stage('Deploy Container') {
+            steps {
+                script {
+                    sh """
+                        docker pull ${DOCKER_IMAGE}:latest
+                        docker stop myapp || true
+                        docker rm myapp || true
+                        docker run -d -p 8000:8080 --name myapp ${DOCKER_IMAGE}:latest
+                    """
+                }
+            }
+        }
+    }
 }
