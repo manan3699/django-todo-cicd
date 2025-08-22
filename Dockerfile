@@ -9,3 +9,4 @@ EXPOSE 8000
 
 # CMD to run Django app or HTML server
 CMD ["python", "-m", "http.server", "8000"]
+
