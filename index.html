@@ -1,577 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ProCar - The Ultimate Car Showcase</title>
+<title>MotaData</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
 <style>
-  /* Reset & baseline */
-  * {
-    box-sizing: border-box;
-  }
-  body, html {
-    margin: 0; padding: 0; height: 100%;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: #eee;
-    scroll-behavior: smooth;
-  }
-  a {
-    color: #f9a825;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  a:hover,
-  a:focus {
-    color: #ffb300;
-    outline: none;
-  }
-  
-  /* Container */
-  .container {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
-
-  /* Header and nav */
-  header {
-    background-color: rgba(20, 30, 40, 0.85);
-    position: fixed;
-    width: 100%;
-    top: 0; left: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
-  }
-  nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 70px;
-    padding: 0 10px;
-  }
-  nav .logo {
-    font-weight: 900;
-    font-size: 1.8rem;
-    letter-spacing: 2px;
-    color: #f9a825;
-    user-select: none;
-    cursor: default;
-  }
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 30px;
-    margin: 0;
-  }
-  nav ul li {
-    line-height: 1;
-  }
-  nav ul li a {
-    font-weight: 600;
-    font-size: 1.05rem;
-    position: relative;
-    padding-bottom: 4px;
-  }
-  nav ul li a::after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 2px;
-    background: #f9a825;
-    left: 0;
-    bottom: 0;
-    transition: width 0.3s ease;
-    border-radius: 2px;
-  }
-  nav ul li a:hover::after,
-  nav ul li a:focus::after,
-  nav ul li a.active::after {
-    width: 100%;
-  }
-
-  nav ul li a:focus {
-    outline: 2px solid #f9a825;
-    outline-offset: 2px;
-  }
-
-  /* Hero section */
-  .hero {
-    padding: 140px 20px 80px 20px;
-    display: flex;
-    flex-wrap: wrap;
-    background: url('https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
-    border-radius: 0 0 40px 40px;
-    color: #fff;
-    text-shadow: 0 2px 15px rgba(0,0,0,0.7);
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.9s ease-out;
-  }
-  .hero.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .hero-text {
-    flex: 1 1 350px;
-    max-width: 600px;
-    margin-bottom: 20px;
-    align-self: center;
-  }
-  .hero-text h1 {
-    font-size: 3.5rem;
-    margin-bottom: 20px;
-  }
-  .hero-text p {
-    font-size: 1.3rem;
-    margin-bottom: 30px;
-    line-height: 1.5;
-    letter-spacing: 1px;
-  }
-  .hero-text a.btn-primary {
-    background: #f9a825;
-    padding: 15px 40px;
-    border-radius: 40px;
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: #222;
-    box-shadow: 0 6px 10px rgba(249,168,37,.5);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
-    display: inline-block;
-  }
-  .hero-text a.btn-primary:hover {
-    background: #ffb300;
-    box-shadow: 0 8px 15px rgba(255,179,0,.7);
-    transform: scale(1.05);
-  }
-  .hero-text a.btn-primary:active {
-    transform: scale(0.95);
-  }
-  .hero-image {
-    flex: 1 1 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .hero-image img {
-    max-width: 100%;
-    border-radius: 30px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.6);
-    transition: transform 0.4s ease;
-  }
-  .hero-image img:hover {
-    transform: scale(1.05) rotate(1.2deg);
-  }
-
-  /* Featured Cars Section */
-  section.featured-cars {
-    margin: 60px 0 80px;
-    color: #eee;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.9s ease-out 0.2s;
-  }
-  section.featured-cars.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  section.featured-cars h2 {
-    text-align: center;
-    font-size: 2.8rem;
-    text-transform: uppercase;
-    letter-spacing: 2.5px;
-    margin-bottom: 50px;
-    color: #f9a825;
-    text-shadow: 0 2px 8px rgba(249,168,37,0.7);
-  }
-  .car-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-  }
-  .car-card {
-    background-color: rgba(32, 42, 56, 0.85);
-    border-radius: 25px;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.7);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-  }
-  .car-card:hover,
-  .car-card:focus-within {
-    transform: translateY(-10px);
-    box-shadow: 0 14px 30px rgba(249,168,37, 0.9);
-  }
-  .car-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-bottom: 2px solid #f9a825;
-  }
-  .car-card-content {
-    padding: 20px 25px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .car-card h3 {
-    margin: 0 0 10px;
-    font-size: 1.5rem;
-    color: #f9a825;
-    letter-spacing: 1.3px;
-  }
-  .car-specs {
-    font-size: 0.9rem;
-    color: #ddd;
-    margin-bottom: 15px;
-  }
-  .car-card button {
-    background: transparent;
-    border: 2px solid #f9a825;
-    color: #f9a825;
-    border-radius: 40px;
-    padding: 10px 30px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease;
-  }
-  .car-card button:hover {
-    background-color: #f9a825;
-    color: #222;
-    transform: scale(1.05);
-  }
-  .car-card button:active {
-    transform: scale(0.95);
-  }
-
-  /* Photo Gallery Section */
-  section.gallery {
-    max-width: 1180px;
-    margin: 70px auto 90px;
-    padding: 0 20px;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.9s ease-out 0.4s;
-  }
-  section.gallery.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  section.gallery h2 {
-    font-size: 2.8rem;
-    color: #f9a825;
-    text-align: center;
-    margin-bottom: 40px;
-    text-transform: uppercase;
-    letter-spacing: 2.5px;
-    text-shadow: 0 2px 6px rgba(249,168,37,0.7);
-  }
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
-    grid-gap: 25px;
-  }
-  .gallery-item {
-    border-radius: 25px;
-    overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    cursor: pointer;
-  }
-  .gallery-item:hover {
-    transform: scale(1.07);
-    box-shadow: 0 14px 40px rgba(249,168,37,0.85);
-    z-index: 10;
-    position: relative;
-  }
-  .gallery-item:focus {
-    outline: 3px solid #f9a825;
-    outline-offset: 3px;
-  }
-  .gallery-item img {
-    width: 100%;
-    height: 190px;
-    object-fit: cover;
-    border-radius: 25px;
-    display: block;
-  }
-
-
-  /* About section */
-  section.about {
-    background-color: rgba(249,168,37,0.1);
-    padding: 60px 20px;
-    border-radius: 25px;
-    color: #443e20;
-    text-align: center;
-    max-width: 900px;
-    margin: 0 auto 80px;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.9s ease-out 0.6s;
-  }
-  section.about.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  section.about h2 {
-    font-size: 2.6rem;
-    margin-bottom: 20px;
-    letter-spacing: 2px;
-    color: #f9a825;
-  }
-  section.about p {
-    font-size: 1.2rem;
-    line-height: 1.6;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  /* Contact Section */
-  section.contact {
-    margin-bottom: 80px;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.9s ease-out 0.8s;
-  }
-  section.contact.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  section.contact h2 {
-    text-align: center;
-    font-size: 2.6rem;
-    letter-spacing: 2px;
-    margin-bottom: 40px;
-    color: #f9a825;
-  }
-  .contact-form {
-    max-width: 500px;
-    background-color: rgba(20, 30, 40, 0.9);
-    padding: 30px;
-    border-radius: 25px;
-    margin: 0 auto;
-  }
-  .contact-form label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    font-size: 1.1rem;
-  }
-  .contact-form input,
-  .contact-form textarea {
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    border: none;
-    border-radius: 15px;
-    font-size: 1rem;
-    background-color: #222c3b;
-    color: #eee;
-  }
-  .contact-form textarea {
-    height: 110px;
-    resize: none;
-  }
-  .contact-form button {
-    background: #f9a825;
-    color: #222;
-    border: none;
-    padding: 15px 40px;
-    font-weight: 700;
-    border-radius: 40px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    width: 100%;
-    transition: background-color 0.3s ease;
-  }
-  .contact-form button:hover {
-    background-color: #ffb300;
-  }
-  .contact-form button:active {
-    transform: scale(0.98);
-  }
-
-  /* Footer */
-  footer {
-    text-align: center;
-    padding: 30px 10px;
-    color: #999;
-    font-size: 0.9rem;
-    user-select: none;
-  }
-
-  /* Responsive */
-  @media (max-width: 720px) {
-    .hero {
-      flex-direction: column;
-      padding: 120px 20px 60px 20px;
-    }
-    .hero-text h1 {
-      font-size: 2.8rem;
-    }
-    nav ul {
-      gap: 18px;
-    }
-  }
+body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+body {font-size:16px;}
+.w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+.w3-half img:hover{opacity:1}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="container">
-    <nav>
-      <div class="logo" aria-label="ProCar brand name">ProCar</div>
-      <ul>
-        <li><a class="nav-link active" href="#featured">Cars</a></li>
-        <li><a class="nav-link" href="#gallery">Gallery</a></li>
-        <li><a class="nav-link" href="#about">About</a></li>
-        <li><a class="nav-link" href="#contact">Contact</a></li>
-      </ul>
-    </nav>
+<!-- Sidebar/menu -->
+<nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-button w3-hide-large w3-display-topleft" style="width:100%;font-size:22px">Close Menu</a>
+  <div class="w3-container">
+    <h1 class="w3-padding-64"><b>MotaData</b></h1>
   </div>
+  <div class="w3-bar-block">
+    <a href="#" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Home</a> 
+    <a href="#showcase" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Showcase</a> 
+    <a href="#services" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Services</a> 
+    <a href="#designers" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Designers</a> 
+    <a href="#packages" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Packages</a> 
+    <a href="#contact" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Contact</a>
+  </div>
+</nav>
+
+<!-- Top menu on small screens -->
+<header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
+  <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()">☰</a>
+  <span>Company Name</span>
 </header>
 
-<main>
-  <section class="hero">
-    <div class="hero-text" role="banner" aria-label="Hero banner with tagline">
-      <h1>The Future of Driving, Today</h1>
-      <p>Discover cutting-edge cars, blending performance with innovative technology. Experience the drive like never before.</p>
-      <a href="#featured" class="btn-primary">Explore Cars</a>
-    </div>
-    <div class="hero-image" aria-hidden="true">
-      <img src="https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80" alt="Luxury red sports car on a highway" />
-    </div>
-  </section>
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
-  <section id="featured" class="featured-cars">
-    <h2 id="cars-heading">Featured Cars</h2>
-    <div class="car-cards">
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
 
-      <article class="car-card" tabindex="0" aria-label="Tesla Model S">
-        <img alt="Tesla Model S red" src="https://tesla-cdn.thron.com/delivery/public/image/tesla/5b7d5177-ad58-4333-9e4c-5f5eae802f7b/bvlatuR/std/1920x1080/_25-Hero-D" />
-        <div class="car-card-content">
-          <h3>Tesla Model S</h3>
-          <p class="car-specs">Electric - 396 mi Range - 0-60 mph in 1.99s</p>
-          <button aria-label="View Tesla Model S details">View Details</button>
-        </div>
-      </article>
-
-      <article class="car-card" tabindex="0" aria-label="BMW i8 Roadster">
-        <img alt="BMW i8 Roadster blue" src="https://cdn.bmwblog.com/wp-content/uploads/2015/05/BMW-i8-Roadster-41.jpg" />
-        <div class="car-card-content">
-          <h3>BMW i8 Roadster</h3>
-          <p class="car-specs">Hybrid - 330 hp - 0-60 mph in 4.2s</p>
-          <button aria-label="View BMW i8 Roadster details">View Details</button>
-        </div>
-      </article>
-
-      <article class="car-card" tabindex="0" aria-label="Audi RS7">
-        <img alt="Audi RS7 black" src="https://cdn.motor1.com/images/mgl/0ANrG/s1/2022-audi-rs7.jpg" />
-        <div class="car-card-content">
-          <h3>Audi RS7</h3>
-          <p class="car-specs">5.0L V8 Turbo - 591 hp - 0-60 mph in 3.5s</p>
-          <button aria-label="View Audi RS7 details">View Details</button>
-        </div>
-      </article>
-
-    </div>
-  </section>
-
-  <section id="gallery" class="gallery">
-    <h2 id="gallery-heading">Car Gallery</h2>
-    <div class="gallery-grid">
-      <div class="gallery-item" tabindex="0" aria-label="Silver sports car">
-        <img src="https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?auto=format&fit=crop&w=800&q=80" alt="Silver sports car on road" />
-      </div>
-      <div class="gallery-item" tabindex="0" aria-label="Black luxury sedan">
-        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80" alt="Black luxury sedan with sunset" />
-      </div>
-      <div class="gallery-item" tabindex="0" aria-label="Blue muscle car">
-        <img src="https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?auto=format&fit=crop&w=800&q=80" alt="Blue vintage muscle car" />
-      </div>
-      <div class="gallery-item" tabindex="0" aria-label="White coupe car">
-        <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80" alt="White coupe parked outdoors" />
-      </div>
-      <div class="gallery-item" tabindex="0" aria-label="Red vintage car">
-        <img src="https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=800&q=80" alt="Red vintage car with green trees" />
-      </div>
-      <div class="gallery-item" tabindex="0" aria-label="Blue luxury car night">
-        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Blue luxury car at night" />
-      </div>
-    </div>
-  </section>
+  <!-- Header -->
+  <div class="w3-container" style="margin-top:80px" id="showcase">
+    <h1 class="w3-jumbo"><b>Interior Design</b></h1>
+    <h1 class="w3-xxxlarge w3-text-red"><b>Showcase.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
   
-  <section id="about" class="about">
-    <h2 id="about-heading">About ProCar</h2>
-    <p>At ProCar, we curate the finest collection of high-performance and electric vehicles combined with style, technology, and precision engineering. Whether you're a thrill-seeker or a tech enthusiast, our showroom offers the car of your dreams. Experience automotive excellence with us.</p>
-  </section>
+  <!-- Photo grid (modal) -->
+  <div class="w3-row-padding">
+    <div class="w3-half">
+      <img src="https://www.w3schools.com/w3images/kitchenconcrete.jpg" style="width:100%" onclick="onClick(this)" alt="Concrete meets bricks">
+      <img src="https://www.w3schools.com/w3images/livingroom.jpg" style="width:100%" onclick="onClick(this)" alt="Light, white and tight scandinavian design">
+      <img src="https://www.w3schools.com/w3images/diningroom.jpg" style="width:100%" onclick="onClick(this)" alt="White walls with designer chairs">
+    </div>
 
-  <section id="contact" class="contact">
-    <h2 id="contact-heading">Contact Us</h2>
-    <form class="contact-form" aria-label="Contact form">
-      <label for="name">Name</label>
-      <input type="text" id="name" name="name" placeholder="Your full name" required autocomplete="name" />
+    <div class="w3-half">
+      <img src="https://www.w3schools.com/w3images/atrium.jpg" style="width:100%" onclick="onClick(this)" alt="Windows for the atrium">
+      <img src="https://www.w3schools.com/w3images/bedroom.jpg" style="width:100%" onclick="onClick(this)" alt="Bedroom and office in one space">
+      <img src="https://www.w3schools.com/w3images/livingroom2.jpg" style="width:100%" onclick="onClick(this)" alt="Scandinavian design">
+    </div>
+  </div>
 
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" placeholder="Your email address" required autocomplete="email" />
+  <!-- Modal for full size images on click-->
+  <div id="modal01" class="w3-modal w3-black" style="padding-top:0" onclick="this.style.display='none'">
+    <span class="w3-button w3-black w3-xxlarge w3-display-topright">×</span>
+    <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
+      <img id="img01" class="w3-image">
+      <p id="caption"></p>
+    </div>
+  </div>
 
-      <label for="message">Message</label>
-      <textarea id="message" name="message" placeholder="Write your message here" required></textarea>
+  <!-- Services -->
+  <div class="w3-container" id="services" style="margin-top:75px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Services.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+    <p>We are a interior design service that focus on what's best for your home and what's best for you!</p>
+    <p>Some text about our services - what we do and what we offer. We are lorem ipsum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...</p>
+  </div>
+  
+  <!-- Designers -->
+  <div class="w3-container" id="designers" style="margin-top:75px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Designers.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+    <p>The best team in the world.</p>
+    <p>We are lorem ipsum consectetur adipiscing elit...</p>
+    <p><b>Our designers are thoughtfully chosen</b>:</p>
+  </div>
 
-      <button type="submit">Send Message</button>
-    </form>
-  </section>
-</main>
+  <!-- The Team -->
+  <div class="w3-row-padding w3-grayscale">
+    <div class="w3-col m4 w3-margin-bottom">
+      <div class="w3-light-grey">
+        <img src="https://www.w3schools.com/w3images/team2.jpg" alt="John" style="width:100%">
+        <div class="w3-container">
+          <h3>John Doe</h3>
+          <p class="w3-opacity">CEO & Founder</p>
+          <p>Phasellus eget enim eu lectus faucibus vestibulum...</p>
+        </div>
+      </div>
+    </div>
+    <div class="w3-col m4 w3-margin-bottom">
+      <div class="w3-light-grey">
+        <img src="https://www.w3schools.com/w3images/team1.jpg" alt="Jane" style="width:100%">
+        <div class="w3-container">
+          <h3>Jane Doe</h3>
+          <p class="w3-opacity">Designer</p>
+          <p>Phasellus eget enim eu lectus faucibus vestibulum...</p>
+        </div>
+      </div>
+    </div>
+    <div class="w3-col m4 w3-margin-bottom">
+      <div class="w3-light-grey">
+        <img src="https://www.w3schools.com/w3images/team3.jpg" alt="Mike" style="width:100%">
+        <div class="w3-container">
+          <h3>Mike Ross</h3>
+          <p class="w3-opacity">Architect</p>
+          <p>Phasellus eget enim eu lectus faucibus vestibulum...</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<footer>
-  &copy; 2025 ProCar. All rights reserved.
-</footer>
+  <!-- Packages / Pricing Tables -->
+  <div class="w3-container" id="packages" style="margin-top:75px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Packages.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+    <p>Some text our prices...</p>
+  </div>
+
+  <div class="w3-row-padding">
+    <div class="w3-half w3-margin-bottom">
+      <ul class="w3-ul w3-light-grey w3-center">
+        <li class="w3-dark-grey w3-xlarge w3-padding-32">Basic</li>
+        <li class="w3-padding-16">Floorplanning</li>
+        <li class="w3-padding-16">10 hours support</li>
+        <li class="w3-padding-16">Photography</li>
+        <li class="w3-padding-16">20% furniture discount</li>
+        <li class="w3-padding-16">Good deals</li>
+        <li class="w3-padding-16">
+          <h2>$ 199</h2>
+          <span class="w3-opacity">per room</span>
+        </li>
+        <li class="w3-light-grey w3-padding-24">
+          <button class="w3-button w3-white w3-padding-large w3-hover-black">Sign Up</button>
+        </li>
+      </ul>
+    </div>
+        
+    <div class="w3-half">
+      <ul class="w3-ul w3-light-grey w3-center">
+        <li class="w3-red w3-xlarge w3-padding-32">Pro</li>
+        <li class="w3-padding-16">Floorplanning</li>
+        <li class="w3-padding-16">50 hours support</li>
+        <li class="w3-padding-16">Photography</li>
+        <li class="w3-padding-16">50% furniture discount</li>
+        <li class="w3-padding-16">GREAT deals</li>
+        <li class="w3-padding-16">
+          <h2>$ 249</h2>
+          <span class="w3-opacity">per room</span>
+        </li>
+        <li class="w3-light-grey w3-padding-24">
+          <button class="w3-button w3-red w3-padding-large w3-hover-black">Sign Up</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Contact -->
+  <div class="w3-container" id="contact" style="margin-top:75px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Contact.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+    <p>Do you want us to style your home? Fill out the form...</p>
+    <form action="/action_page.php" target="_blank">
+      <div class="w3-section">
+        <label>Name</label>
+        <input class="w3-input w3-border" type="text" name="Name" required>
+      </div>
+      <div class="w3-section">
+        <label>Email</label>
+        <input class="w3-input w3-border" type="text" name="Email" required>
+      </div>
+      <div class="w3-section">
+        <label>Message</label>
+        <input class="w3-input w3-border" type="text" name="Message" required>
+      </div>
+      <button type="submit" class="w3-button w3-block w3-padding-large w3-red w3-margin-bottom">Send Message</button>
+    </form>  
+  </div>
+
+<!-- End page content -->
+</div>
+
+<!-- W3.CSS Container -->
+<div class="w3-light-grey w3-container w3-padding-32" style="margin-top:75px;padding-right:58px"><p class="w3-right">Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-opacity">w3.css</a></p></div>
 
 <script>
-  // Scroll spy for nav highlighting
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('nav ul li a');
+// Script to open and close sidebar
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+  document.getElementById("myOverlay").style.display = "block";
+}
+ 
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+  document.getElementById("myOverlay").style.display = "none";
+}
 
-  function onScroll() {
-    const scrollPos = window.scrollY || window.pageYOffset;
-
-    sections.forEach(section => {
-      const offsetTop = section.offsetTop - 90;
-      const offsetBottom = offsetTop + section.offsetHeight;
-
-      const id = section.getAttribute('id');
-      const link = document.querySelector(`nav ul li a[href="#${id}"]`);
-
-      if (scrollPos >= offsetTop && scrollPos < offsetBottom) {
-        navLinks.forEach(l => l.classList.remove('active'));
-        if (link) link.classList.add('active');
-      }
-    });
-
-    // Show sections animation on scroll
-    document.querySelectorAll('section, .hero').forEach(el => {
-      const rect = el.getBoundingClientRect();
-      if(rect.top < window.innerHeight * 0.85){
-        el.classList.add('visible');
-      }
-    });
-  }
-
-  document.addEventListener('scroll', onScroll);
-  window.addEventListener('load', onScroll);
-
-  // Smooth form submission demo
-  const form = document.querySelector('.contact-form');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    alert('Thank you for your message! We will get back to you soon.');
-    form.reset();
-  });
+// Modal Image Gallery
+function onClick(element) {
+  document.getElementById("img01").src = element.src;
+  document.getElementById("modal01").style.display = "block";
+  var captionText = document.getElementById("caption");
+  captionText.innerHTML = element.alt;
+}
 </script>
 
 </body>
