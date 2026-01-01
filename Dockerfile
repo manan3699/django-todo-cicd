@@ -8,4 +8,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["python", "app.py"]
+CMD ["python", "ChatBot for ci-cd"]
