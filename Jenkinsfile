@@ -6,10 +6,11 @@ pipeline {
     }
 
     triggers {
-        githubPush()   // 🔥 Trigger build automatically on git push
+        githubPush()
     }
 
     stages {
+
         stage('Clone Repository') {
             steps {
                 git branch: 'main',
@@ -20,21 +21,17 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.build("${DOCKER_IMAGE}:latest")
-                }
+                sh "docker build -t ${DOCKER_IMAGE}:latest ."
             }
         }
 
         stage('Run Container') {
             steps {
-                script {
-                    // Stop old container if running
-                    sh 'docker stop myapp || true && docker rm myapp || true'
-
-                    // Run with correct port mapping
-                    sh 'docker run -d -p 8000:8000 --name myapp ${DOCKER_IMAGE}:latest'
-                }
+                sh '''
+                docker stop myapp || true
+                docker rm myapp || true
+                docker run -d -p 8000:8000 --name myapp ${DOCKER_IMAGE}:latest
+                '''
             }
         }
     }
