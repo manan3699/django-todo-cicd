@@ -10,6 +10,7 @@ pipeline {
             steps {
                 git branch: 'main',
                     url: 'https://github.com/manan3699/django-todo-cicd.git'
+                    credentialsId: 'github-credentials'
             }
         }
 
