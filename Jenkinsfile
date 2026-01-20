@@ -1,41 +1,29 @@
 pipeline {
     agent any
-
     environment {
         IMAGE_NAME = "chatbot-app:latest"
         CONTAINER_NAME = "chatbot-container"
     }
-
     stages {
-
-        stage('Clean Workspace') {
+        stage('Clone Repo') {
             steps {
-                cleanWs()
+                git branch: 'main', url: 'https://github.com/manan3699/django-todo-cicd.git', credentialsId: 'github-credentials'
             }
         }
-
-        stage('Clone Chatbot Code') {
+        stage('Build Docker Image') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/manan3699/django-todo-cicd.git',
-                    credentialsId: 'github-credentials'
+                bat "docker build --no-cache -t %IMAGE_NAME% ."
             }
         }
-
-        stage('Build Chatbot Image') {
+        stage('Stop Old Container') {
             steps {
-                sh '''
-                docker build --no-cache -t $IMAGE_NAME .
-                '''
+                bat "docker stop %CONTAINER_NAME% || exit 0"
+                bat "docker rm %CONTAINER_NAME% || exit 0"
             }
         }
-
-        stage('Run Chatbot Container') {
+        stage('Run Container') {
             steps {
-                sh '''
-                docker rm -f $CONTAINER_NAME || true
-                docker run -d -p 8000:8000 --name $CONTAINER_NAME $IMAGE_NAME
-                '''
+                bat "docker run -d -p 8000:8000 --name %CONTAINER_NAME% %IMAGE_NAME%"
             }
         }
     }
