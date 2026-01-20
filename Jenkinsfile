@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "chatbot-app:v1"
+        IMAGE_NAME = "chatbot-app:latest"
         CONTAINER_NAME = "chatbot-container"
     }
 
@@ -14,7 +14,7 @@ pipeline {
             }
         }
 
-        stage('Clone Latest Code') {
+        stage('Clone Chatbot Code') {
             steps {
                 git branch: 'main',
                     url: 'https://github.com/manan3699/django-todo-cicd.git',
@@ -22,17 +22,7 @@ pipeline {
             }
         }
 
-        stage('Force Docker Cleanup') {
-            steps {
-                sh '''
-                docker rm -f $CONTAINER_NAME || true
-                docker rmi -f $IMAGE_NAME || true
-                docker builder prune -af
-                '''
-            }
-        }
-
-        stage('Build NEW Chatbot Image') {
+        stage('Build Chatbot Image') {
             steps {
                 sh '''
                 docker build --no-cache -t $IMAGE_NAME .
@@ -40,13 +30,11 @@ pipeline {
             }
         }
 
-        stage('Run NEW Chatbot Container') {
+        stage('Run Chatbot Container') {
             steps {
                 sh '''
-                docker run -d \
-                -p 8000:8000 \
-                --name $CONTAINER_NAME \
-                $IMAGE_NAME
+                docker rm -f $CONTAINER_NAME || true
+                docker run -d -p 8000:8000 --name $CONTAINER_NAME $IMAGE_NAME
                 '''
             }
         }
