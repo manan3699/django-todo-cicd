@@ -2,14 +2,18 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "manan3699/django-todo"
-    }
-
-    triggers {
-        githubPush()   // 🔥 Trigger build automatically on git push
+        IMAGE_NAME = "django-todo"
+        CONTAINER_NAME = "django-todo-app"
     }
 
     stages {
+
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
         stage('Clone Repository') {
             steps {
                 git branch: 'main',
@@ -20,21 +24,18 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.build("${DOCKER_IMAGE}:latest")
-                }
+                sh '''
+                docker build -t $IMAGE_NAME .
+                '''
             }
         }
 
         stage('Run Container') {
             steps {
-                script {
-                    // Stop old container if running
-                    sh 'docker stop myapp || true && docker rm myapp || true'
-
-                    // Run with correct port mapping
-                    sh 'docker run -d -p 8000:8000 --name myapp ${DOCKER_IMAGE}:latest'
-                }
+                sh '''
+                docker rm -f $CONTAINER_NAME || true
+                docker run -d -p 8000:8000 --name $CONTAINER_NAME $IMAGE_NAME
+                '''
             }
         }
     }
