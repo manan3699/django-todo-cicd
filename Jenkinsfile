@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "manan3699/django-todo"
+        DOCKER_IMAGE = "manan3699/chatbot"
     }
 
     triggers {
