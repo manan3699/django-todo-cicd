@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")  # ✅ DO NOT hardcode
+    api_key="---" 
 )
 
 @app.route("/")
@@ -18,7 +18,7 @@ def chat():
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o-mini",  # CHEAP & ACCURATE
             messages=[
                 {
                     "role": "system",
@@ -36,9 +36,10 @@ def chat():
         return jsonify({"reply": reply})
 
     except Exception as e:
-        print("OpenAI Error:", e)
+        print("OpenAI Error:", e)  # VERY IMPORTANT
         return jsonify({"reply": "Error: Unable to get response from OpenAI."}), 500
 
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(debug=True)
+
+
