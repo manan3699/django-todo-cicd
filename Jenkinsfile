@@ -1,28 +1,40 @@
 pipeline {
     agent any
 
-    stages {
+    environment {
+        DOCKER_IMAGE = "manan3699/django-todo"
+    }
 
-        stage('Checkout Code') {
+    triggers {
+        githubPush()   // 🔥 Trigger build automatically on git push
+    }
+
+    stages {
+        stage('Clone Repository') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/manan3699/django-todo-cicd.git'
+                    url: 'https://github.com/manan3699/django-todo-cicd.git',
+                    credentialsId: 'github-credentials'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t chatbot-app:latest .'
+                script {
+                    docker.build("${DOCKER_IMAGE}:latest")
+                }
             }
         }
 
-        stage('Deploy Container') {
+        stage('Run Container') {
             steps {
-                sh '''
-                docker stop chatbot || true
-                docker rm chatbot || true
-                docker run -d --name chatbot -p 8001:8000 chatbot-app:latest
-                '''
+                script {
+                    // Stop old container if running
+                    sh 'docker stop myapp || true && docker rm myapp || true'
+
+                    // Run with correct port mapping
+                    sh 'docker run -d -p 8000:8000 --name myapp ${DOCKER_IMAGE}:latest'
+                }
             }
         }
     }
