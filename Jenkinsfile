@@ -1,34 +1,25 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = "manan3699/chatbot"
-    }
-
     stages {
-        stage('Clone Repo') {
+        stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/manan3699/django-todo-cicd.git'
-                    credentialsId: 'github-credentials'
+                git url: 'https://github.com/manan3699/django-todo-cicd', branch: 'main'
             }
         }
 
-     stage('Build Docker Image') {
-    steps {
-        script {
-            sh "docker build --no-cache -t ${DOCKER_IMAGE}:latest ."
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t chatbot-app:latest .'
+            }
         }
-    }
-}
 
-
-        stage('Run Container') {
+        stage('Deploy') {
             steps {
                 sh '''
                 docker stop chatbot || true
                 docker rm chatbot || true
-                docker run -d -p 8000:8000 --name chatbot $DOCKER_IMAGE:latest
+                docker run -d --name chatbot -p 8001:8000 chatbot-app:latest
                 '''
             }
         }
