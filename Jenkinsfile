@@ -2,39 +2,52 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "manan3699/django-todo"
-    }
-
-    triggers {
-        githubPush()   // 🔥 Trigger build automatically on git push
+        IMAGE_NAME = "chatbot-app"
+        CONTAINER_NAME = "chatbot-container"
     }
 
     stages {
+
+        stage('Force Clean Workspace') {
+            steps {
+                sh '''
+                rm -rf *
+                '''
+            }
+        }
+
         stage('Clone Repository') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/manan3699/django-todo-cicd.git',
-                    credentialsId: 'github-credentials'
+                    url: 'https://github.com/manan3699/YOUR_CHATBOT_REPO.git'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build NEW Docker Image') {
             steps {
-                script {
-                    docker.build("${DOCKER_IMAGE}:latest")
-                }
+                sh '''
+                docker build --no-cache -t chatbot-app .
+                '''
             }
         }
 
-        stage('Run Container') {
+        stage('Stop Old Container') {
             steps {
-                script {
-                    // Stop old container if running
-                    sh 'docker stop myapp || true && docker rm myapp || true'
+                sh '''
+                docker stop chatbot-container || true
+                docker rm chatbot-container || true
+                '''
+            }
+        }
 
-                    // Run with correct port mapping
-                    sh 'docker run -d -p 8000:8000 --name myapp ${DOCKER_IMAGE}:latest'
-                }
+        stage('Run Chatbot') {
+            steps {
+                sh '''
+                docker run -d \
+                -p 8000:8000 \
+                --name chatbot-container \
+                chatbot-app
+                '''
             }
         }
     }
