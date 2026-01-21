@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/<https://github.com/manan3699/django-todo-cicd.git'
+                    url: 'https://github.com/manan3699/django-todo-cicd.git'
             }
         }
 
