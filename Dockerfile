@@ -1,12 +1,11 @@
-FROM python:3.10-slim
+FROM jenkins/jenkins:lts
 
-WORKDIR /app
+USER root
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && \
+    apt-get install -y docker.io && \
+    apt-get clean
 
-COPY . .
+RUN usermod -aG docker jenkins
 
-EXPOSE 8000
-
-CMD ["python", "app.py"]
+USER jenkins
