@@ -1,13 +1,12 @@
-FROM jenkins/jenkins:lts-jdk17
+FROM python:3.10-slim
 
-USER root
+WORKDIR /app
 
-# Install Docker CLI
-RUN apt-get update && \
-    apt-get install -y docker.io && \
-    apt-get clean
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Allow Jenkins user to run docker
-RUN usermod -aG docker jenkins
+COPY . .
 
-USER jenkins
+EXPOSE 5000
+
+CMD ["python", "app.py"]
