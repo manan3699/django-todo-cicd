@@ -9,13 +9,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/manan3699/django-todo-cicd.git'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh '''
