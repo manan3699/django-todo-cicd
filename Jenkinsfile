@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "manan3699/chatbot-app"
         IMAGE_TAG  = "latest"
-        OPENAI_API_KEY = credentials('openai-api-key')
+        CONTAINER_NAME = "chatbot-prod"
     }
 
     stages {
@@ -12,7 +12,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
-                docker build -t $IMAGE_NAME:$IMAGE_TAG -f Dockerfile.chatbot .
+                  docker build -t $IMAGE_NAME:$IMAGE_TAG -f Dockerfile.chatbot .
                 '''
             }
         }
@@ -25,7 +25,7 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh '''
-                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                      echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
                     '''
                 }
             }
@@ -34,25 +34,35 @@ pipeline {
         stage('Push Image to DockerHub') {
             steps {
                 sh '''
-                docker push $IMAGE_NAME:$IMAGE_TAG
+                  docker push $IMAGE_NAME:$IMAGE_TAG
                 '''
             }
         }
 
         stage('Deploy to GCP VM') {
             steps {
-                sshagent(['gcp-ssh']) {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'gcp-ssh',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    ),
+                    string(
+                        credentialsId: 'openai-api-key',
+                        variable: 'OPENAI_API_KEY'
+                    )
+                ]) {
                     sh '''
-                    ssh -o StrictHostKeyChecking=no parmarrahul2102@34.42.50.173 << EOF
+                      ssh -o StrictHostKeyChecking=no -i $SSH_KEY $SSH_USER@34.42.50.173 << EOF
                         docker pull $IMAGE_NAME:$IMAGE_TAG
-                        docker stop chatbot-app || true
-                        docker rm chatbot-app || true
+                        docker stop $CONTAINER_NAME || true
+                        docker rm $CONTAINER_NAME || true
                         docker run -d \
-                          --name chatbot-app \
+                          --name $CONTAINER_NAME \
                           -p 8000:5000 \
                           -e OPENAI_API_KEY=$OPENAI_API_KEY \
                           $IMAGE_NAME:$IMAGE_TAG
-                    EOF
+                      EOF
                     '''
                 }
             }
