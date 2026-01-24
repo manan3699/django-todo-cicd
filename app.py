@@ -4,8 +4,7 @@ import os
 
 app = Flask(__name__)
 
-# ✅ Reads from environment variable (PERFECT)
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 @app.route("/")
 def index():
@@ -19,25 +18,17 @@ def chat():
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {
-                    "role": "system",
-                    "content": "You are a helpful assistant specialized in CI/CD pipelines and Google Cloud Platform."
-                },
-                {
-                    "role": "user",
-                    "content": user_message
-                }
+                {"role": "system", "content": "You are a helpful assistant specialized in CI/CD pipelines and Google Cloud Platform."},
+                {"role": "user", "content": user_message}
             ],
             max_tokens=150
         )
 
-        reply = response.choices[0].message.content
-        return jsonify({"reply": reply})
+        return jsonify({"reply": response.choices[0].message.content})
 
     except Exception as e:
         print("OpenAI Error:", e)
         return jsonify({"reply": "Error from OpenAI"}), 500
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
