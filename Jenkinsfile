@@ -6,6 +6,7 @@ pipeline {
         IMAGE_TAG  = "latest"
         CONTAINER_NAME = "chatbot-prod"
         VM_IP = "34.42.50.173"
+        OPENAI_API_KEY = credentials('openai-api-key')
     }
 
     stages {
@@ -13,7 +14,7 @@ pipeline {
         stage('Clone Repo') {
             steps {
                 git branch: 'main',
-                    url: 'git@github.com:manan3699/chatbot-app.git',
+                    url: 'git@github.com:manan3699/YOUR_REPO_NAME.git',
                     credentialsId: 'github-ssh'
             }
         }
@@ -36,48 +37,37 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Push Image') {
             steps {
                 sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
             }
         }
 
         stage('Deploy to GCP VM') {
-            steps {
-                withCredentials([
-                    sshUserPrivateKey(
-                        credentialsId: 'gcp-ssh',
-                        keyFileVariable: 'SSH_KEY',
-                        usernameVariable: 'SSH_USER'
-                    ),
-                    string(
-                        credentialsId: 'openai-api-key',
-                        variable: 'OPENAI_API_KEY'
-                    )
-                ]) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no -i \$SSH_KEY \$SSH_USER@\$VM_IP << EOF
-                        docker pull $IMAGE_NAME:$IMAGE_TAG
-                        docker stop $CONTAINER_NAME || true
-                        docker rm $CONTAINER_NAME || true
-                        docker run -d \\
-                          --name $CONTAINER_NAME \\
-                          -p 8000:5000 \\
-                          -e OPENAI_API_KEY=\$OPENAI_API_KEY \\
-                          $IMAGE_NAME:$IMAGE_TAG
-                    EOF
-                    """
-                }
-            }
-        }
-    }
-
-    post {
-        failure {
-            echo "❌ Pipeline failed. Check logs above."
-        }
-        success {
-            echo "✅ Deployment successful! Chatbot is live."
+    steps {
+        withCredentials([
+            sshUserPrivateKey(
+                credentialsId: 'gcp-ssh',
+                keyFileVariable: 'SSH_KEY',
+                usernameVariable: 'SSH_USER'
+            ),
+            string(
+                credentialsId: 'openai-api-key',
+                variable: 'OPENAI_API_KEY'
+            )
+        ]) {
+            sh """
+              ssh -o StrictHostKeyChecking=no -i \$SSH_KEY \$SSH_USER@34.42.50.173 '
+                docker pull manan3699/chatbot-app:latest &&
+                docker stop chatbot-prod || true &&
+                docker rm chatbot-prod || true &&
+                docker run -d \
+                  --name chatbot-prod \
+                  -p 8000:5000 \
+                  -e OPENAI_API_KEY=${OPENAI_API_KEY} \
+                  manan3699/chatbot-app:latest
+              '
+            """
         }
     }
 }
