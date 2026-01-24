@@ -2,11 +2,10 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "manan3699/chatbot-app"
+        IMAGE_NAME = "manan3699/django-todo"
         IMAGE_TAG  = "latest"
-        CONTAINER_NAME = "chatbot-prod"
+        CONTAINER_NAME = "django-todo-prod"
         VM_IP = "34.42.50.173"
-        OPENAI_API_KEY = credentials('openai-api-key')
     }
 
     stages {
@@ -14,7 +13,7 @@ pipeline {
         stage('Clone Repo') {
             steps {
                 git branch: 'main',
-                    url: 'git@github.com:manan3699/YOUR_REPO_NAME.git',
+                    url: 'git@github.com:manan3699/django-todo-cicd.git',
                     credentialsId: 'github-ssh'
             }
         }
@@ -37,37 +36,43 @@ pipeline {
             }
         }
 
-        stage('Push Image') {
+        stage('Push Docker Image') {
             steps {
                 sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
             }
         }
 
         stage('Deploy to GCP VM') {
-    steps {
-        withCredentials([
-            sshUserPrivateKey(
-                credentialsId: 'gcp-ssh',
-                keyFileVariable: 'SSH_KEY',
-                usernameVariable: 'SSH_USER'
-            ),
-            string(
-                credentialsId: 'openai-api-key',
-                variable: 'OPENAI_API_KEY'
-            )
-        ]) {
-            sh """
-              ssh -o StrictHostKeyChecking=no -i \$SSH_KEY \$SSH_USER@34.42.50.173 '
-                docker pull manan3699/chatbot-app:latest &&
-                docker stop chatbot-prod || true &&
-                docker rm chatbot-prod || true &&
-                docker run -d \
-                  --name chatbot-prod \
-                  -p 8000:5000 \
-                  -e OPENAI_API_KEY=${OPENAI_API_KEY} \
-                  manan3699/chatbot-app:latest
-              '
-            """
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'gcp-ssh',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -i \$SSH_KEY \$SSH_USER@\$VM_IP << EOF
+                        docker pull $IMAGE_NAME:$IMAGE_TAG
+                        docker stop $CONTAINER_NAME || true
+                        docker rm $CONTAINER_NAME || true
+                        docker run -d \\
+                          --name $CONTAINER_NAME \\
+                          -p 8000:8000 \\
+                          $IMAGE_NAME:$IMAGE_TAG
+                    EOF
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ CI/CD pipeline completed successfully!"
+        }
+        failure {
+            echo "❌ Pipeline failed. Check logs above."
         }
     }
 }
