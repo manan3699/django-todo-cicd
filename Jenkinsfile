@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME     = "manan3699/chatbot-app"
-        IMAGE_TAG      = "latest"
+        IMAGE_NAME = "manan3699/chatbot-app"
+        IMAGE_TAG  = "latest"
         CONTAINER_NAME = "chatbot-prod"
-        VM_IP          = "34.42.50.173"
+        VM_IP = "34.42.50.173"
     }
 
     stages {
@@ -20,33 +20,25 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh """
-                  docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
-                """
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
             }
         }
 
         stage('Login to DockerHub') {
             steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'dockerhub-creds',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
-                    )
-                ]) {
-                    sh """
-                      echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
-                    """
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                 }
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                sh """
-                  docker push ${IMAGE_NAME}:${IMAGE_TAG}
-                """
+                sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
             }
         }
 
@@ -64,16 +56,16 @@ pipeline {
                     )
                 ]) {
                     sh """
-                      ssh -o StrictHostKeyChecking=no -i \$SSH_KEY \$SSH_USER@${VM_IP} '
-                        docker pull ${IMAGE_NAME}:${IMAGE_TAG} &&
-                        docker stop ${CONTAINER_NAME} || true &&
-                        docker rm ${CONTAINER_NAME} || true &&
-                        docker run -d \
-                          --name ${CONTAINER_NAME} \
-                          -p 8000:5000 \
-                          -e OPENAI_API_KEY=${OPENAI_API_KEY} \
-                          ${IMAGE_NAME}:${IMAGE_TAG}
-                      '
+                    ssh -o StrictHostKeyChecking=no -i \$SSH_KEY \$SSH_USER@\$VM_IP << EOF
+                        docker pull $IMAGE_NAME:$IMAGE_TAG
+                        docker stop $CONTAINER_NAME || true
+                        docker rm $CONTAINER_NAME || true
+                        docker run -d \\
+                          --name $CONTAINER_NAME \\
+                          -p 8000:5000 \\
+                          -e OPENAI_API_KEY=\$OPENAI_API_KEY \\
+                          $IMAGE_NAME:$IMAGE_TAG
+                    EOF
                     """
                 }
             }
@@ -81,11 +73,11 @@ pipeline {
     }
 
     post {
-        success {
-            echo "✅ Deployment successful! Chatbot is live on http://${VM_IP}:8000"
-        }
         failure {
             echo "❌ Pipeline failed. Check logs above."
+        }
+        success {
+            echo "✅ Deployment successful! Chatbot is live."
         }
     }
 }
