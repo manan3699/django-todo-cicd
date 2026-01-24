@@ -13,7 +13,7 @@ pipeline {
         stage('Clone Repo') {
             steps {
                 git branch: 'main',
-                    url: 'git@github.com:manan3699/YOUR_REPO_NAME.git',
+                    url: 'git@github.com:manan3699/chatbot-app.git',
                     credentialsId: 'github-ssh'
             }
         }
