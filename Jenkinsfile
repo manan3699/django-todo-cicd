@@ -8,15 +8,15 @@ pipeline {
         VM_IP = "34.42.50.173"
     }
 
-    stages {
+   stage('Clone Repo') {
+    steps {
+        deleteDir()   // 🔥 THIS IS THE KEY
+        git credentialsId: 'github-ssh',
+            url: 'git@github.com:manan3699/django-todo-cicd.git',
+            branch: 'main'
+    }
+}
 
-        stage('Clone Repo') {
-            steps {
-                git branch: 'main',
-                    url: 'git@github.com:manan3699/django-todo-cicd.git',
-                    credentialsId: 'github-ssh'
-            }
-        }
 
         stage('Build Docker Image') {
             steps {
